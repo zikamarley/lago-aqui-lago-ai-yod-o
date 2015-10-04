@@ -14,7 +14,7 @@ namespace AutoPot
         const int Biscuit = (int)2010;
         const int Flask = (int)2041;
 
-        private const string MenuName = "Potter";
+        private const string MenuName = "AutoPot";
         public static Menu Settings;
 
         static void Main(string[] args)
@@ -31,7 +31,7 @@ namespace AutoPot
 
         static void OnLoad(EventArgs args)
         {
-            Chat.Print("[Potter Loaded]");
+            Chat.Print("[AutoPot Loaded]");
             CreateMenu();
             Game.OnUpdate += OnUpdate;
         }
@@ -47,7 +47,7 @@ namespace AutoPot
         static void CreateMenu()
         {
             Settings = MainMenu.AddMenu(MenuName, MenuName.ToLower());
-            Settings.AddGroupLabel("Potter Settings");
+            Settings.AddGroupLabel("AutoPot Settings");
             Settings.Add("use.hp_potion", new CheckBox("Use Health Potions"));
             Settings.Add("use.mana_potion", new CheckBox("Use Mana Potions"));
             Settings.Add("use.biscuit", new CheckBox("Use Biscuits"));
