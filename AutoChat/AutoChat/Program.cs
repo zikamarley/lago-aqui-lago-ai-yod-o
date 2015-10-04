@@ -191,12 +191,13 @@ namespace AutoChat
                 
                 if (!Killed.IsAlly)
                 {
+                    /*
                     // we will not congratulate ourselves lol :D
                     if ((kills == 0 && Killed.IsMe) || kills > 0)
                     {
                         return;
                     }
-                    
+                    */
                     kills += Rewards[args.EventId];
                 }
                 else

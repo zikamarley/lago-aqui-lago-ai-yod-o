@@ -48,6 +48,8 @@ namespace AutoPot
         {
             Settings = MainMenu.AddMenu(MenuName, MenuName.ToLower());
             Settings.AddGroupLabel("AutoPot Settings");
+            Settings.Add("enable", new CheckBox("Enable"));
+            Settings.AddSeparator();
             Settings.Add("use.hp_potion", new CheckBox("Use Health Potions"));
             Settings.Add("use.mana_potion", new CheckBox("Use Mana Potions"));
             Settings.Add("use.biscuit", new CheckBox("Use Biscuits"));
@@ -68,6 +70,8 @@ namespace AutoPot
 
         private static void OnUpdate(EventArgs args)
         {
+            if (Settings["enable"].Cast<CheckBox>().CurrentValue) return;
+
             if (IsPotRunning()) return;
 
             if (Player.HealthPercent <= Settings["use.on_health_percent"].Cast<Slider>().CurrentValue)
