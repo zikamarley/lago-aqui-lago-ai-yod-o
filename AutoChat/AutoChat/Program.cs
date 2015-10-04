@@ -15,6 +15,7 @@ namespace AutoChat
         public static List<string> Smileys;
         public static List<string> Greetings;
         public static Dictionary<GameEventId, int> Rewards;
+        public static Dictionary<GameEventId, int> EndGame;
         public static Random rand = new Random();
 
         private const string MenuName = "AutoChat";
@@ -29,7 +30,6 @@ namespace AutoChat
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += Game_OnGameLoad;
-            Game.OnEnd += Game_OnGameEnd;
             Loading.OnLoadingComplete += Game_OnGameStart;
             Game.OnNotify += Game_OnGameNotifyEvent;
             Game.OnUpdate += Game_OnGameUpdate;
@@ -55,6 +55,15 @@ namespace AutoChat
             {
                 { GameEventId.OnChampionDie, 1 },  // champion kill
                 { GameEventId.OnTurretDamage, 1 }, // turret kill
+            };
+        }
+
+        static void setupEndGame()
+        {
+            EndGame = new Dictionary<GameEventId, int>
+            {
+                { GameEventId.OnHQDie, 1 },  // Nexus die
+                { GameEventId.OnHQKill, 1 },  // Nexus kill
             };
         }
 
@@ -124,6 +133,7 @@ namespace AutoChat
             setupMenu();
             setupMessages();
             setupRewards();
+            setupEndGame();
             Chat.Print("[AutoChat Loaded]");
         }
 
@@ -144,6 +154,7 @@ namespace AutoChat
 
         static void Game_OnGameEnd(EventArgs args)
         {
+            
             Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
         }
 
@@ -168,17 +179,25 @@ namespace AutoChat
 
         static void Game_OnGameNotifyEvent(GameNotifyEventArgs args)
         {
+            if (EndGame.ContainsKey(args.EventId))
+            {
+                Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
+                return;
+            }
+
             if (Rewards.ContainsKey(args.EventId))
             {
-                Obj_AI_Base Killer = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(args.NetworkId);
-
-                if (Killer.IsAlly)
+                Obj_AI_Base Killed = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(args.NetworkId);
+                
+                if (!Killed.IsAlly)
                 {
                     // we will not congratulate ourselves lol :D
-                    if ((kills == 0 && !Killer.IsMe) || kills > 0)
+                    if ((kills == 0 && Killed.IsMe) || kills > 0)
                     {
-                        kills += Rewards[args.EventId];
+                        return;
                     }
+                    
+                    kills += Rewards[args.EventId];
                 }
                 else
                 {
