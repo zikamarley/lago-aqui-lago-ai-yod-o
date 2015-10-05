@@ -52,10 +52,11 @@ namespace AutoChat
         {
             Events = new Dictionary<GameEventId, int>
             {
-                { GameEventId.OnChampionDie, 1 },  // champion kill
+                { GameEventId.OnChampionKill, 1 },  // champion kill
                 { GameEventId.OnTurretDamage, 1 }, // turret kill
-                { GameEventId.OnHQDie, 1 },  // Nexus die
-                { GameEventId.OnHQKill, 1 },  // Nexus kill
+                { GameEventId.OnHQDie, 1 },  // nexus die
+                { GameEventId.OnHQKill, 1 },  // nexus kill
+                { GameEventId.OnSurrenderAgreed, 1 },  // agree surrender
             };
         }
 
@@ -172,17 +173,19 @@ namespace AutoChat
         {
             if (Events.ContainsKey(args.EventId))
             {
-                if (string.Equals(args.EventId.ToString(), "OnHQDie") || string.Equals(args.EventId.ToString(), "OnHQKill"))
+                if (string.Equals(args.EventId.ToString(), "OnHQDie") 
+                    || string.Equals(args.EventId.ToString(), "OnHQKill")
+                    || string.Equals(args.EventId.ToString(), "OnSurrenderAgreed"))
                 {
                     Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
                     return;
                 }
 
-                if (string.Equals(args.EventId.ToString(), "OnChampionDie") || string.Equals(args.EventId.ToString(), "OnTurretDamage"))
+                if (string.Equals(args.EventId.ToString(), "OnChampionKill") || string.Equals(args.EventId.ToString(), "OnTurretDamage"))
                 {
                     Obj_AI_Base Killer = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>((uint)args.NetworkId);
 
-                    if (!Killer.IsAlly)
+                    if (Killer.IsAlly)
                     {
                         // we will not congratulate ourselves lol :D
                         if ((Killer.IsMe) || kills > 0)
