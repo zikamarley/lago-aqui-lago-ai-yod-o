@@ -41,11 +41,11 @@ namespace AutoChat
             Settings.AddGroupLabel("AutoChat Settings");
             Settings.Add("sayGreeting", new CheckBox("Say Greeting"));
             Settings.Add("sayGreetingAllChat", new CheckBox("Say Greeting In All Chat"));
-            Settings.Add("sayGreetingDelayMin", new Slider("Min Greeting Delay", 1, 1, 5));
-            Settings.Add("sayGreetingDelayMax", new Slider("Max Greeting Delay", 5, 5, 10));
+            Settings.Add("sayGreetingDelayMin", new Slider("Min Greeting Delay", 3, 1, 5));
+            Settings.Add("sayGreetingDelayMax", new Slider("Max Greeting Delay", 6, 5, 10));
             Settings.Add("sayCongratulate", new CheckBox("Congratulate players"));
-            Settings.Add("sayCongratulateDelayMin", new Slider("Min Congratulate Delay", 1, 1, 3));
-            Settings.Add("sayCongratulateDelayMax", new Slider("Max Congratulate Delay", 3, 3, 5));
+            Settings.Add("sayCongratulateDelayMin", new Slider("Min Congratulate Delay", 2, 1, 3));
+            Settings.Add("sayCongratulateDelayMax", new Slider("Max Congratulate Delay", 4, 3, 5));
             Settings.Add("sayCongratulateInterval", new Slider("Minimum Interval between messages", 240, 1, 600));
         }
 
