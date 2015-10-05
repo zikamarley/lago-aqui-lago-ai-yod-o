@@ -57,7 +57,6 @@ namespace AutoChat
                 { GameEventId.OnTurretKill, 1 }, // turret kill
                 { GameEventId.OnHQDie, 1 },  // nexus die
                 { GameEventId.OnHQKill, 1 },  // nexus kill
-                { GameEventId.OnSurrenderAgreed, 1 },  // agree surrender
             };
         }
 
@@ -187,8 +186,7 @@ namespace AutoChat
             {
                 // END GAME
                 if (string.Equals(args.EventId.ToString(), "OnHQDie") 
-                    || string.Equals(args.EventId.ToString(), "OnHQKill")
-                    || string.Equals(args.EventId.ToString(), "OnSurrenderAgreed"))
+                    || string.Equals(args.EventId.ToString(), "OnHQKill"))
                 {
                     saySignOff();
                     return;
