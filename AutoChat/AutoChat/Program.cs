@@ -14,6 +14,7 @@ namespace AutoChat
         public static List<string> Messages;
         public static List<string> Smileys;
         public static List<string> Greetings;
+        public static List<string> SignOff;
         public static Dictionary<GameEventId, int> Events;
         public static Random rand = new Random();
 
@@ -48,12 +49,12 @@ namespace AutoChat
             Settings.Add("sayCongratulateInterval", new Slider("Minimum Interval between messages", 240, 1, 600));
         }
 
-        static void setupRewards()
+        static void setupEvents()
         {
             Events = new Dictionary<GameEventId, int>
             {
                 { GameEventId.OnChampionKill, 1 },  // champion kill
-                { GameEventId.OnTurretDamage, 1 }, // turret kill
+                { GameEventId.OnTurretKill, 1 }, // turret kill
                 { GameEventId.OnHQDie, 1 },  // nexus die
                 { GameEventId.OnHQKill, 1 },  // nexus kill
                 { GameEventId.OnSurrenderAgreed, 1 },  // agree surrender
@@ -75,6 +76,11 @@ namespace AutoChat
             Greetings = new List<string>
             {
                 "gl", "hf", "have fun guys", "gl hf", "glhf"
+            };
+
+            SignOff = new List<string>
+            {
+                "gg", "ggwp", "gg wp"
             };
         }
 
@@ -100,6 +106,13 @@ namespace AutoChat
             return greeting;
         }
 
+        static string generateSignOff()
+        {
+            string signoff = getRandomElement(SignOff, false);
+            signoff += getRandomElement(Smileys);
+            return signoff;
+        }
+
         static void sayCongratulations()
         {
             if (Settings["sayCongratulate"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + Settings["sayCongratulateInterval"].Cast<Slider>().CurrentValue)
@@ -121,11 +134,16 @@ namespace AutoChat
             }
         }
 
+        static void saySignOff()
+        {
+            Core.DelayAction(() => Chat.Say(generateSignOff()), (new Random(Environment.TickCount).Next(100, 1001)));
+        }
+
         static void Game_OnGameLoad(EventArgs args)
         {
             setupMenu();
             setupMessages();
-            setupRewards();
+            setupEvents();
             Chat.Print("[AutoChat Loaded]");
         }
 
@@ -142,12 +160,6 @@ namespace AutoChat
 
             // greeting message
             Core.DelayAction(sayGreeting, rand.Next(Math.Min(minDelay, maxDelay), Math.Max(minDelay, maxDelay)) * 1000);
-        }
-
-        static void Game_OnGameEnd(EventArgs args)
-        {
-
-            Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
         }
 
         static void Game_OnGameUpdate(EventArgs args)
@@ -173,15 +185,17 @@ namespace AutoChat
         {
             if (Events.ContainsKey(args.EventId))
             {
+                // END GAME
                 if (string.Equals(args.EventId.ToString(), "OnHQDie") 
                     || string.Equals(args.EventId.ToString(), "OnHQKill")
                     || string.Equals(args.EventId.ToString(), "OnSurrenderAgreed"))
                 {
-                    Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
+                    saySignOff();
                     return;
                 }
 
-                if (string.Equals(args.EventId.ToString(), "OnChampionKill") || string.Equals(args.EventId.ToString(), "OnTurretDamage"))
+                // KILLS & TURRET KILLS
+                if (string.Equals(args.EventId.ToString(), "OnChampionKill") || string.Equals(args.EventId.ToString(), "OnTurretKill"))
                 {
                     Obj_AI_Base Killer = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>((uint)args.NetworkId);
 
