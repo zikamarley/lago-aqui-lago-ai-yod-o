@@ -14,8 +14,7 @@ namespace AutoChat
         public static List<string> Messages;
         public static List<string> Smileys;
         public static List<string> Greetings;
-        public static Dictionary<GameEventId, int> Rewards;
-        public static Dictionary<GameEventId, int> EndGame;
+        public static Dictionary<GameEventId, int> Events;
         public static Random rand = new Random();
 
         private const string MenuName = "AutoChat";
@@ -51,17 +50,10 @@ namespace AutoChat
 
         static void setupRewards()
         {
-            Rewards = new Dictionary<GameEventId, int>
+            Events = new Dictionary<GameEventId, int>
             {
                 { GameEventId.OnChampionDie, 1 },  // champion kill
                 { GameEventId.OnTurretDamage, 1 }, // turret kill
-            };
-        }
-
-        static void setupEndGame()
-        {
-            EndGame = new Dictionary<GameEventId, int>
-            {
                 { GameEventId.OnHQDie, 1 },  // Nexus die
                 { GameEventId.OnHQKill, 1 },  // Nexus kill
             };
@@ -133,7 +125,6 @@ namespace AutoChat
             setupMenu();
             setupMessages();
             setupRewards();
-            setupEndGame();
             Chat.Print("[AutoChat Loaded]");
         }
 
@@ -154,7 +145,7 @@ namespace AutoChat
 
         static void Game_OnGameEnd(EventArgs args)
         {
-            
+
             Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
         }
 
@@ -179,41 +170,42 @@ namespace AutoChat
 
         static void Game_OnGameNotifyEvent(GameNotifyEventArgs args)
         {
-            if (EndGame.ContainsKey(args.EventId))
+            if (Events.ContainsKey(args.EventId))
             {
-                Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
-                return;
-            }
-
-            if (Rewards.ContainsKey(args.EventId))
-            {
-                Obj_AI_Base Killed = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(args.NetworkId);
-                
-                if (!Killed.IsAlly)
+                if (string.Equals(args.EventId.ToString(), "OnHQDie") || string.Equals(args.EventId.ToString(), "OnHQKill"))
                 {
-                    /*
-                    // we will not congratulate ourselves lol :D
-                    if ((kills == 0 && Killed.IsMe) || kills > 0)
+                    Core.DelayAction(() => Chat.Say("/all gg wp"), (new Random(Environment.TickCount).Next(100, 1001)));
+                    return;
+                }
+
+                if (string.Equals(args.EventId.ToString(), "OnChampionDie") || string.Equals(args.EventId.ToString(), "OnTurretDamage"))
+                {
+                    Obj_AI_Base Killer = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>((uint)args.NetworkId);
+
+                    if (!Killer.IsAlly)
                     {
-                        return;
+                        // we will not congratulate ourselves lol :D
+                        if ((Killer.IsMe) || kills > 0)
+                        {
+                            return;
+                        }
+                        kills += Events[args.EventId];
                     }
-                    */
-                    kills += Rewards[args.EventId];
+                    else
+                    {
+                        deaths += Events[args.EventId];
+                    }
                 }
                 else
                 {
-                    deaths += Rewards[args.EventId];
+                    return;
                 }
-            }
-            else
-            {
-                return;
-            }
 
-            int minDelay = Settings["sayCongratulateDelayMin"].Cast<Slider>().CurrentValue;
-            int maxDelay = Settings["sayCongratulateDelayMax"].Cast<Slider>().CurrentValue;
+                int minDelay = Settings["sayCongratulateDelayMin"].Cast<Slider>().CurrentValue;
+                int maxDelay = Settings["sayCongratulateDelayMax"].Cast<Slider>().CurrentValue;
 
-            congratzTime = Game.Time + rand.Next(Math.Min(minDelay, maxDelay), Math.Max(minDelay, maxDelay));
+                congratzTime = Game.Time + rand.Next(Math.Min(minDelay, maxDelay), Math.Max(minDelay, maxDelay));
+            }
         }
     }
 }

@@ -70,7 +70,7 @@ namespace AutoPot
 
         private static void OnUpdate(EventArgs args)
         {
-            if (Settings["enable"].Cast<CheckBox>().CurrentValue) return;
+            if (!Settings["enable"].Cast<CheckBox>().CurrentValue) return;
 
             if (IsPotRunning()) return;
 
