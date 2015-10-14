@@ -4,6 +4,7 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using System.Linq;
 
 namespace AutoPot
 {
@@ -74,6 +75,8 @@ namespace AutoPot
 
             if (IsPotRunning()) return;
 
+            if (InFountain(Player)) return;
+
             if (Player.HealthPercent <= Settings["use.on_health_percent"].Cast<Slider>().CurrentValue)
             {
                 if (Settings["use.hp_potion"].Cast<CheckBox>().CurrentValue && Item.HasItem(HealthPot))
@@ -95,6 +98,12 @@ namespace AutoPot
             {
                 Item.UseItem(Flask);
             }
+        }
+
+        public static bool InFountain(Obj_AI_Base champ)
+        {
+            var fountainRange = 1050;
+            return champ.IsVisible && ObjectManager.Get<Obj_SpawnPoint>().Any(sp => champ.Distance(sp.Position) < fountainRange);
         }
     }
 }
