@@ -32,7 +32,6 @@ namespace AutoChat
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += Game_OnGameLoad;
-            Game.OnNotify += Game_OnGameNotifyEvent;
         }
 
         static void Game_OnGameLoad(EventArgs args)
@@ -43,6 +42,8 @@ namespace AutoChat
 
             Chat.Print("[AutoChat Loaded]");
             sayGreeting();
+            
+            Game.OnNotify += Game_OnGameNotifyEvent;
         }
 
         static void setupMenu()
