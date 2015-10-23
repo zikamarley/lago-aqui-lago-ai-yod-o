@@ -11,7 +11,7 @@ namespace AutoChat
     class Program
     {
         public static Obj_AI_Base Player = ObjectManager.Player;
-        public static List<string> Messages;
+        public static List<string> Congrats;
         public static List<string> Smileys;
         public static List<string> Greetings;
         public static List<string> SignOff;
@@ -85,9 +85,9 @@ namespace AutoChat
 
         static void setupMessages()
         {
-            Messages = new List<string>
+            Congrats = new List<string>
             {
-                "gj", "good job", "wp", "nice"
+                "gj", "gj", "good job", "wp", "nice", "goodjob", "gjwp", "nice1"
             };
 
             Smileys = new List<string>
@@ -133,7 +133,7 @@ namespace AutoChat
 
         static string generateCongratulations(string champName)
         {
-            string message = getRandomElement(Messages, false);
+            string message = getRandomElement(Congrats, false);
             message += " ";
             message += slangName(champName);
             message += " ";
