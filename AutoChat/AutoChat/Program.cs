@@ -405,7 +405,7 @@ namespace AutoChat
                     }
                     else
                     {
-                        saySympathy();
+                        //saySympathy();
                     }
                 }
 
