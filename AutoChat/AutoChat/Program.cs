@@ -89,7 +89,7 @@ namespace AutoChat
         {
             Congrats = new List<string>
             {
-                "gj", "gj", "gj", "good job", "wp", "nice", "goodjob", "gjwp", "nice1", "nice one", "sweet"
+                "gj", "gj", "gj", "gj", "good job", "wp", "nice", "goodjob", "gjwp", "nice one", "sweet", "awesome"
             };
 
             Smileys = new List<string>
@@ -99,7 +99,7 @@ namespace AutoChat
 
             Greetings = new List<string>
             {
-                "gl", "hf", "have fun guys", "gl hf", "glhf"
+                "gl", "hf", "have fun guys", "gl hf", "glhf", "have fun all"
             };
 
             SignOff = new List<string>
@@ -119,7 +119,7 @@ namespace AutoChat
 
             Clutch = new List<string>
             {
-                "hahaha", "NICE", "GJ", "WELL DONE", "HAHA", "epic", "REKT", "WOW"
+                "hahaha", "NICE", "GJ", "WELL DONE", "HAHA", "epic", "REKT", "WOW", "GG"
             };
 
             Motivate = new List<string>
