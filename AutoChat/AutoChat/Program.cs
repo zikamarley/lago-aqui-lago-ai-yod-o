@@ -124,7 +124,7 @@ namespace AutoChat
 
             Motivate = new List<string>
             {
-                "push towers", "clear lanes", "push", "need objectives"
+                "gj now push towers", "ok clear lanes", "nice push", "need objectives", "gj lanes", "push", "good push", "drag?"
             };
         }
 
