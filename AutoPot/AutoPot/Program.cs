@@ -32,7 +32,7 @@ namespace AutoPot
 
         static void OnLoad(EventArgs args)
         {
-            Chat.Print("[AutoPot Loaded]");
+            Console.WriteLine("AutoPot - Loaded");
             CreateMenu();
             Game.OnUpdate += OnUpdate;
         }

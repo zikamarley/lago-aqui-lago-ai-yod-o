@@ -29,7 +29,7 @@ namespace AutoChat
         
 
         public const string MenuName = "AutoChat";
-        public static Menu Settings;
+        public static Menu BaseMenu, GreetingMenu, OptionsMenu, EndGameMenu;
 
         static void Main(string[] args)
         {
@@ -42,28 +42,43 @@ namespace AutoChat
             setupEvents();
             setupMessages();
 
-            Console.WriteLine("[AutoChat Loaded]");
+            Console.WriteLine("AutoChat - Loaded");
             sayGreeting();
             Game.OnNotify += Game_OnGameNotifyEvent;
         }
 
         static void setupMenu()
         {
-            Settings = MainMenu.AddMenu(MenuName, MenuName.ToLower());
-            Settings.AddGroupLabel("AutoChat Settings");
-            Settings.Add("sayGreeting", new CheckBox("Say Greeting"));
-            Settings.Add("sayGreetingAllChat", new CheckBox("Say Greeting In All Chat"));
-            Settings.Add("sayGreetingDelayMin", new Slider("Min Greeting Delay", 3, 1, 5));
-            Settings.Add("sayGreetingDelayMax", new Slider("Max Greeting Delay", 6, 5, 10));
-            Settings.AddSeparator();
-            Settings.Add("sayCongratulate", new CheckBox("Congratulate players"));
-            Settings.Add("sayMotivate", new CheckBox("Motivate Players"));
-            Settings.Add("sayApology", new CheckBox("Apologize to players on deaths"));
-            Settings.Add("saySympathy", new CheckBox("Sympathetic on deaths"));
-            Settings.AddSeparator();
-            Settings.Add("sayMessageDelayMin", new Slider("Min Message Delay", 2, 1, 3));
-            Settings.Add("sayMessageDelayMax", new Slider("Max Message Delay", 4, 3, 5));
-            Settings.Add("sayMessageInterval", new Slider("Minimum Interval between messages", 180, 1, 600));
+            BaseMenu = MainMenu.AddMenu(MenuName, MenuName.ToLower());
+            BaseMenu.AddGroupLabel("AutoChat");
+            BaseMenu.Add("enable", new CheckBox("Enable Autochat"));
+
+            GreetingMenu = BaseMenu.AddSubMenu("Greeting Message", "greetingmessage");
+            GreetingMenu.AddGroupLabel("AutoChat");
+            GreetingMenu.AddLabel("Greeting Message Settings");
+            GreetingMenu.Add("sayGreeting", new CheckBox("Say Greeting"));
+            GreetingMenu.Add("sayGreetingAllChat", new CheckBox("Say Greeting In All Chat"));
+            GreetingMenu.AddSeparator();
+            GreetingMenu.Add("sayGreetingDelayMin", new Slider("Min Greeting Delay", 3, 1, 5));
+            GreetingMenu.Add("sayGreetingDelayMax", new Slider("Max Greeting Delay", 6, 5, 10));
+
+            OptionsMenu = BaseMenu.AddSubMenu("Message Options", "messageoptions");
+            OptionsMenu.AddGroupLabel("AutoChat");
+            OptionsMenu.AddLabel("Message Options");
+            OptionsMenu.Add("sayCongratulate", new CheckBox("Congratulate"));
+            OptionsMenu.Add("sayMotivate", new CheckBox("Motivate"));
+            OptionsMenu.Add("sayApology", new CheckBox("Apologize"));
+            OptionsMenu.Add("saySympathy", new CheckBox("Sympathetic"));
+            OptionsMenu.AddSeparator();
+            OptionsMenu.Add("sayMessageDelayMin", new Slider("Min Message Delay", 2, 1, 3));
+            OptionsMenu.Add("sayMessageDelayMax", new Slider("Max Message Delay", 4, 3, 5));
+            OptionsMenu.Add("sayMessageInterval", new Slider("Minimum Interval between messages", 180, 1, 600));
+
+            EndGameMenu = BaseMenu.AddSubMenu("EndGame Message", "endgamemessage");
+            EndGameMenu.AddGroupLabel("AutoChat");
+            EndGameMenu.AddLabel("EndGame Message Settings");
+            EndGameMenu.Add("sayEndGame", new CheckBox("Say EndGame Message"));
+            EndGameMenu.Add("sayEndGameAllChat", new CheckBox("Say EndGame Message In All Chat"));
         }
 
         static void setupEvents()
@@ -72,8 +87,6 @@ namespace AutoChat
             {
                 { GameEventId.OnChampionKill, 1 },  // champion kill
                 { GameEventId.OnTurretKill, 1 }, // turret kill
-                { GameEventId.OnDie, 1 },
-                { GameEventId.OnKill, 1 },
                 { GameEventId.OnChampionDie, 1},  // you die
                 { GameEventId.OnChampionQuadraKill, 1 }, // quadra kill
                 { GameEventId.OnChampionPentaKill, 1 }, // penta kill
@@ -114,7 +127,7 @@ namespace AutoChat
 
             Sympathy = new List<string>
             {
-                "bl", "tough luck", "bad luck", "bummer"
+                "bl", "bl", "tough luck", "bad luck", "bummer"
             };
 
             Clutch = new List<string>
@@ -199,15 +212,14 @@ namespace AutoChat
         #region Say Functions
         static void sayGreeting()
         {
-
             if (Game.Time > 300) return;
 
-            int minGreetingDelay = Settings["sayGreetingDelayMin"].Cast<Slider>().CurrentValue * 1000;
-            int maxGreetingDelay = Settings["sayGreetingDelayMax"].Cast<Slider>().CurrentValue * 1000;
+            int minGreetingDelay = GreetingMenu["sayGreetingDelayMin"].Cast<Slider>().CurrentValue * 1000;
+            int maxGreetingDelay = GreetingMenu["sayGreetingDelayMax"].Cast<Slider>().CurrentValue * 1000;
 
-            if (Settings["sayGreeting"].Cast<CheckBox>().CurrentValue)
+            if (GreetingMenu["sayGreeting"].Cast<CheckBox>().CurrentValue)
             {
-                if (Settings["sayGreetingAllChat"].Cast<CheckBox>().CurrentValue)
+                if (GreetingMenu["sayGreetingAllChat"].Cast<CheckBox>().CurrentValue)
                 {
                     Core.DelayAction(() => Chat.Say("/all " + generateGreeting()), (random.Next(minGreetingDelay, maxGreetingDelay)));
                     return;
@@ -218,7 +230,7 @@ namespace AutoChat
 
         static void sayCongratulations(string champName)
         {
-            if (Settings["sayCongratulate"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + Settings["sayMessageInterval"].Cast<Slider>().CurrentValue)
+            if (OptionsMenu["sayCongratulate"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + OptionsMenu["sayMessageInterval"].Cast<Slider>().CurrentValue)
             {
                 lastMessage = Game.Time;
                 Core.DelayAction(() => Chat.Say(generateCongratulations(champName)), (random.Next(minDelay, maxDelay)));
@@ -227,7 +239,7 @@ namespace AutoChat
 
         static void saySympathy(string champName)
         {
-            if (Settings["saySympathy"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + Settings["sayMessageInterval"].Cast<Slider>().CurrentValue)
+            if (OptionsMenu["saySympathy"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + OptionsMenu["sayMessageInterval"].Cast<Slider>().CurrentValue)
             {
                 lastMessage = Game.Time;
                 Core.DelayAction(() => Chat.Say(generateSympathy(champName)), (random.Next(minDelay, maxDelay)));
@@ -236,7 +248,7 @@ namespace AutoChat
 
         static void sayApology()
         {
-            if (Settings["sayApology"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + Settings["sayMessageInterval"].Cast<Slider>().CurrentValue)
+            if (OptionsMenu["sayApology"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + OptionsMenu["sayMessageInterval"].Cast<Slider>().CurrentValue)
             {
                 lastMessage = Game.Time;
                 Core.DelayAction(() => Chat.Say(generateApology()), (random.Next(minDelay, maxDelay)));
@@ -245,7 +257,7 @@ namespace AutoChat
         
         static void sayClutch()
         {
-            if (Settings["sayCongratulate"].Cast<CheckBox>().CurrentValue)
+            if (OptionsMenu["sayCongratulate"].Cast<CheckBox>().CurrentValue)
             {
                 Core.DelayAction(() => Chat.Say(generateClutch()), (random.Next(minDelay, maxDelay)));
             }
@@ -253,7 +265,7 @@ namespace AutoChat
 
         static void sayMotivation()
         {
-            if (Settings["sayMotivate"].Cast<CheckBox>().CurrentValue)
+            if (OptionsMenu["sayMotivate"].Cast<CheckBox>().CurrentValue)
             {
                 Core.DelayAction(() => Chat.Say(generateMotivation()), (random.Next(minDelay, maxDelay)));
             }
@@ -261,7 +273,15 @@ namespace AutoChat
 
         static void saySignOff()
         {
-            Core.DelayAction(() => Chat.Say("/all " + generateEnding()), (new Random(Environment.TickCount).Next(100, 1001)));
+            if (EndGameMenu["sayEndGame"].Cast<CheckBox>().CurrentValue)
+            {
+                if (EndGameMenu["sayEndGameAllChat"].Cast<CheckBox>().CurrentValue)
+                {
+                    Core.DelayAction(() => Chat.Say("/all " + generateEnding()), (new Random(Environment.TickCount).Next(100, 1001)));
+                    return;
+                }
+                Core.DelayAction(() => Chat.Say(generateEnding()), (new Random(Environment.TickCount).Next(100, 1001)));
+            }
         }
         #endregion
 
@@ -322,10 +342,12 @@ namespace AutoChat
 
         static void Game_OnGameNotifyEvent(GameNotifyEventArgs args)
         {
+            if (!BaseMenu["enable"].Cast<CheckBox>().CurrentValue) return;
+
             if (Events.ContainsKey(args.EventId))
             {
-                minDelay = Settings["sayMessageDelayMin"].Cast<Slider>().CurrentValue * 1000;
-                maxDelay = Settings["sayMessageDelayMax"].Cast<Slider>().CurrentValue * 1000;
+                minDelay = OptionsMenu["sayMessageDelayMin"].Cast<Slider>().CurrentValue * 1000;
+                maxDelay = OptionsMenu["sayMessageDelayMax"].Cast<Slider>().CurrentValue * 1000;
 
                 // KILLS
                 if (args.EventId.ToString() == "OnChampionKill")
