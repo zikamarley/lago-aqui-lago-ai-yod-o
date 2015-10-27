@@ -27,7 +27,7 @@ namespace AutoChat
         public static int minDelay = 0;
         public static int maxDelay = 0;
 
-        
+
 
         public const string MenuName = "AutoChat";
         public static Menu BaseMenu, GreetingMenu, OptionsMenu, EndGameMenu;
@@ -156,11 +156,11 @@ namespace AutoChat
             return greeting;
         }
 
-        static string generateCongratulations(string champName)
+        static string generateCongratulations(AIHeroClient champ)
         {
             string message = getRandomElement(Congrats, false);
             message += " ";
-            message += slangName(champName);
+            message += slangName(champ.ChampionName);
             message += " ";
             message += getRandomElement(Smileys);
             return message;
@@ -172,11 +172,11 @@ namespace AutoChat
             return message;
         }
 
-        static string generateSympathy(string champName)
+        static string generateSympathy(AIHeroClient champ)
         {
             string sympathy = getRandomElement(Sympathy, false);
             sympathy += " ";
-            sympathy += slangName(champName);
+            sympathy += slangName(champ.ChampionName);
             sympathy += " ";
             sympathy += getRandomElement(Smileys);
             return sympathy;
@@ -190,7 +190,7 @@ namespace AutoChat
             return apology;
         }
 
-        
+
         static string generateClutch()
         {
             string clutch = getRandomElement(Clutch, false);
@@ -198,7 +198,7 @@ namespace AutoChat
             clutch += getRandomElement(Smileys);
             return clutch;
         }
-        
+
         static string generateMotivation()
         {
             string motivate = getRandomElement(Motivate, false);
@@ -235,21 +235,25 @@ namespace AutoChat
             }
         }
 
-        static void sayCongratulations(string champName)
+        static void sayCongratulations(AIHeroClient champ)
         {
             if (OptionsMenu["sayCongratulate"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + OptionsMenu["sayMessageInterval"].Cast<Slider>().CurrentValue)
             {
                 lastMessage = Game.Time;
-                Core.DelayAction(() => Chat.Say(generateCongratulations(champName)), (random.Next(minDelay, maxDelay)));
+                Core.DelayAction(() =>
+                {
+                    if (champ.IsDead) return;
+                    Chat.Say(generateCongratulations(champ));
+                }, (random.Next(minDelay, maxDelay)));
             }
         }
 
-        static void saySympathy(string champName)
+        static void saySympathy(AIHeroClient champ)
         {
             if (OptionsMenu["saySympathy"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + OptionsMenu["sayMessageInterval"].Cast<Slider>().CurrentValue)
             {
                 lastMessage = Game.Time;
-                Core.DelayAction(() => Chat.Say(generateSympathy(champName)), (random.Next(minDelay, maxDelay)));
+                Core.DelayAction(() => Chat.Say(generateSympathy(champ)), (random.Next(minDelay, maxDelay)));
             }
         }
 
@@ -261,7 +265,7 @@ namespace AutoChat
                 Core.DelayAction(() => Chat.Say(generateApology()), (random.Next(minDelay, maxDelay)));
             }
         }
-        
+
         static void sayClutch()
         {
             if (OptionsMenu["sayCongratulate"].Cast<CheckBox>().CurrentValue)
@@ -365,7 +369,7 @@ namespace AutoChat
                     {
                         if (!_killer.IsMe)
                         {
-                            sayCongratulations(_killer.ChampionName);
+                            sayCongratulations(_killer);
                         }
                     }
                 }
@@ -382,7 +386,7 @@ namespace AutoChat
                         }
                         else
                         {
-                            saySympathy(_dead.ChampionName);
+                            saySympathy(_dead);
                         }
                     }
                 }
@@ -433,7 +437,7 @@ namespace AutoChat
                 if (args.EventId.ToString() == "OnAce")
                 {
                     AIHeroClient _killer = ObjectManager.GetUnitByNetworkId<AIHeroClient>(args.NetworkId);
-                    
+
                     if (_killer.IsAlly)
                     {
                         sayMotivation();
