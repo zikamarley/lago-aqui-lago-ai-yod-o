@@ -137,7 +137,7 @@ namespace AutoChat
 
             Motivate = new List<string>
             {
-                "gj now push towers", "ok clear lanes", "nice push", "need objectives", "gj lanes", "push", "good push", "drag?"
+                "push towers", "towers" , "clear lanes", "push", "need objectives", "objectives" ,"lanes", "push", "drag?"
             };
         }
 
@@ -162,6 +162,12 @@ namespace AutoChat
             message += slangName(champName);
             message += " ";
             message += getRandomElement(Smileys);
+            return message;
+        }
+
+        static string generateCongratulations()
+        {
+            string message = getRandomElement(Congrats, false);
             return message;
         }
 
@@ -267,7 +273,7 @@ namespace AutoChat
         {
             if (OptionsMenu["sayMotivate"].Cast<CheckBox>().CurrentValue)
             {
-                Core.DelayAction(() => Chat.Say(generateMotivation()), (random.Next(minDelay, maxDelay)));
+                Core.DelayAction(() => Chat.Say(generateCongratulations() + " " + generateMotivation()), (random.Next(minDelay, maxDelay)));
             }
         }
 
