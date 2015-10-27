@@ -23,6 +23,7 @@ namespace AutoChat
         public static Random random = new Random();
 
         public static float lastMessage = 0;
+        public static float motivatemessage = 0;
         public static int minDelay = 0;
         public static int maxDelay = 0;
 
@@ -271,8 +272,9 @@ namespace AutoChat
 
         static void sayMotivation()
         {
-            if (OptionsMenu["sayMotivate"].Cast<CheckBox>().CurrentValue)
+            if (OptionsMenu["sayMotivate"].Cast<CheckBox>().CurrentValue && Game.Time > motivatemessage)
             {
+                motivatemessage = Game.Time + 60;
                 Core.DelayAction(() => Chat.Say(generateCongratulations() + " " + generateMotivation()), (random.Next(minDelay, maxDelay)));
             }
         }
