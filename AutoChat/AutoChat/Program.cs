@@ -88,7 +88,10 @@ namespace AutoChat
             {
                 { GameEventId.OnChampionKill, 1 },  // champion kill
                 { GameEventId.OnTurretKill, 1 }, // turret kill
+                { GameEventId.OnKillDragon, 1 }, // kill dragon
+                { GameEventId.OnKillWorm, 1 }, // kill baron
                 { GameEventId.OnChampionDie, 1},  // you die
+                { GameEventId.OnDeathAssist,1 }, // assist
                 { GameEventId.OnChampionQuadraKill, 1 }, // quadra kill
                 { GameEventId.OnChampionPentaKill, 1 }, // penta kill
                 { GameEventId.OnAce, 1}, // ace enemy team
@@ -248,6 +251,18 @@ namespace AutoChat
             }
         }
 
+        static void sayCongratulations()
+        {
+            if (OptionsMenu["sayCongratulate"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + OptionsMenu["sayMessageInterval"].Cast<Slider>().CurrentValue)
+            {
+                lastMessage = Game.Time;
+                Core.DelayAction(() =>
+                {
+                    Chat.Say(generateCongratulations());
+                }, (random.Next(minDelay, maxDelay)));
+            }
+        }
+
         static void saySympathy(AIHeroClient champ)
         {
             if (OptionsMenu["saySympathy"].Cast<CheckBox>().CurrentValue && Game.Time > lastMessage + OptionsMenu["sayMessageInterval"].Cast<Slider>().CurrentValue)
@@ -370,6 +385,19 @@ namespace AutoChat
                         if (!_killer.IsMe)
                         {
                             sayCongratulations(_killer);
+                        }
+                    }
+                }
+
+                // OBJECTIVE KILL
+                if (args.EventId.ToString() == "OnTurretKill" || args.EventId.ToString() == "OnKillDragon" || args.EventId.ToString() == "OnKillWorm")
+                {
+                    AIHeroClient _killer = ObjectManager.GetUnitByNetworkId<AIHeroClient>(args.NetworkId);
+                    if (_killer.IsAlly)
+                    {
+                        if (!_killer.IsMe)
+                        {
+                            sayCongratulations();
                         }
                     }
                 }
