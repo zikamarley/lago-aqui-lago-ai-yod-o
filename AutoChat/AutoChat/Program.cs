@@ -376,8 +376,8 @@ namespace AutoChat
                 minDelay = OptionsMenu["sayMessageDelayMin"].Cast<Slider>().CurrentValue * 1000;
                 maxDelay = OptionsMenu["sayMessageDelayMax"].Cast<Slider>().CurrentValue * 1000;
 
-                // KILLS
-                if (args.EventId.ToString() == "OnChampionKill")
+                // CHAMPION KILLS
+                if (args.EventId.ToString() == "OnChampionKill" || args.EventId.ToString() == "OnTurretKill")
                 {
                     AIHeroClient _killer = ObjectManager.GetUnitByNetworkId<AIHeroClient>(args.NetworkId);
                     if (_killer.IsAlly)
@@ -389,8 +389,8 @@ namespace AutoChat
                     }
                 }
 
-                // OBJECTIVE KILL
-                if (args.EventId.ToString() == "OnTurretKill" || args.EventId.ToString() == "OnKillDragon" || args.EventId.ToString() == "OnKillWorm")
+                // OBJECTIVES
+                if (args.EventId.ToString() == "OnKillDragon" || args.EventId.ToString() == "OnKillWorm")
                 {
                     AIHeroClient _killer = ObjectManager.GetUnitByNetworkId<AIHeroClient>(args.NetworkId);
                     if (_killer.IsAlly)
