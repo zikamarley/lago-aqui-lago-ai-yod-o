@@ -51,12 +51,9 @@ namespace AutoChat
         static void setupMenu()
         {
             BaseMenu = MainMenu.AddMenu(MenuName, MenuName.ToLower());
-            BaseMenu.AddGroupLabel("AutoChat");
             BaseMenu.Add("enable", new CheckBox("Enable Autochat"));
 
             GreetingMenu = BaseMenu.AddSubMenu("Greeting Message", "greetingmessage");
-            GreetingMenu.AddGroupLabel("AutoChat");
-            GreetingMenu.AddLabel("Greeting Message Settings");
             GreetingMenu.Add("sayGreeting", new CheckBox("Say Greeting"));
             GreetingMenu.Add("sayGreetingAllChat", new CheckBox("Say Greeting In All Chat"));
             GreetingMenu.AddSeparator();
@@ -64,8 +61,6 @@ namespace AutoChat
             GreetingMenu.Add("sayGreetingDelayMax", new Slider("Max Greeting Delay", 6, 5, 10));
 
             OptionsMenu = BaseMenu.AddSubMenu("Message Options", "messageoptions");
-            OptionsMenu.AddGroupLabel("AutoChat");
-            OptionsMenu.AddLabel("Message Options");
             OptionsMenu.Add("sayCongratulate", new CheckBox("Congratulate"));
             OptionsMenu.Add("sayMotivate", new CheckBox("Motivate"));
             OptionsMenu.Add("sayApology", new CheckBox("Apologize"));
@@ -76,8 +71,6 @@ namespace AutoChat
             OptionsMenu.Add("sayMessageInterval", new Slider("Minimum Interval between messages", 180, 1, 600));
 
             EndGameMenu = BaseMenu.AddSubMenu("EndGame Message", "endgamemessage");
-            EndGameMenu.AddGroupLabel("AutoChat");
-            EndGameMenu.AddLabel("EndGame Message Settings");
             EndGameMenu.Add("sayEndGame", new CheckBox("Say EndGame Message"));
             EndGameMenu.Add("sayEndGameAllChat", new CheckBox("Say EndGame Message In All Chat"));
         }
