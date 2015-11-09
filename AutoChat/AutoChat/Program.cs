@@ -352,7 +352,7 @@ namespace AutoChat
                     case "Caitlyn": return "cait";
                     case "Cassiopeia": return "cass";
                     case "Cho'Gath": return "cho";
-                    case "Dr. Mundo": return "mundo";
+                    case "Dr.Mundo": return "mundo";
                     case "Evelynn": return "eve";
                     case "Ezreal": return "ez";
                     case "Fiddlesticks": return "fiddles";
@@ -364,12 +364,12 @@ namespace AutoChat
                     case "Kha'Zix": return "khazix";
                     case "Kog'Maw": return "kog";
                     case "LeBlanc": return "lb";
-                    case "Lee Sin": return "lee";
+                    case "LeeSin": return "lee";
                     case "Lissandra": return "liss";
                     case "Malphite": return "malph";
                     case "Malzahar": return "malz";
                     case "MasterYi": return "yi";
-                    case "Miss Fortune": return "mf";
+                    case "MissFortune": return "mf";
                     case "MonkeyKing": return "wk";
                     case "Mordekaiser": return "mord";
                     case "Morgana": return "morg";
@@ -379,10 +379,10 @@ namespace AutoChat
                     case "Orianna": return "ori";
                     case "Rek'Sai": return "reksai";
                     case "Sejuani": return "sej";
-                    case "Tahm Kench": return "tahm";
+                    case "TahmKench": return "tahm";
                     case "Tristana": return "trist";
                     case "Tryndamere": return "trynd";
-                    case "Twisted Fate": return "tf";
+                    case "TwistedFate": return "tf";
                     case "Vel'Koz": return "velkoz";
                     case "Vladimir": return "vlad";
                     case "Volibear": return "voli";
