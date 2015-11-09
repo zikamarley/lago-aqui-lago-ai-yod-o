@@ -368,7 +368,7 @@ namespace AutoChat
                     case "Lissandra": return "liss";
                     case "Malphite": return "malph";
                     case "Malzahar": return "malz";
-                    case "Master Yi": return "yi";
+                    case "MasterYi": return "yi";
                     case "Miss Fortune": return "mf";
                     case "MonkeyKing": return "wk";
                     case "Mordekaiser": return "mord";
