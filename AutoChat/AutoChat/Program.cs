@@ -18,6 +18,7 @@ namespace AutoChat
         public static List<string> Sympathy;
         public static List<string> Clutch;
         public static List<string> Motivate;
+        public static List<string> Honor;
 
         public static Dictionary<GameEventId, int> Events;
         public static Random random = new Random();
@@ -26,9 +27,7 @@ namespace AutoChat
         public static float motivatemessage = 0;
         public static int minDelay = 0;
         public static int maxDelay = 0;
-
-
-
+        
         public const string MenuName = "AutoChat";
         public static Menu BaseMenu, GreetingMenu, OptionsMenu, EndGameMenu;
 
@@ -65,9 +64,10 @@ namespace AutoChat
             OptionsMenu.Add("sayMotivate", new CheckBox("Motivate"));
             OptionsMenu.Add("sayApology", new CheckBox("Apologize"));
             OptionsMenu.Add("saySympathy", new CheckBox("Sympathetic"));
+            OptionsMenu.Add("sayHonor", new CheckBox("Honor Opponents"));
             OptionsMenu.AddSeparator();
             OptionsMenu.Add("sayMessageDelayMin", new Slider("Min Message Delay", 2, 1, 3));
-            OptionsMenu.Add("sayMessageDelayMax", new Slider("Max Message Delay", 4, 3, 5));
+            OptionsMenu.Add("sayMessageDelayMax", new Slider("Max Message Delay", 6, 3, 10));
             OptionsMenu.Add("sayMessageInterval", new Slider("Minimum Interval between messages", 180, 1, 600));
 
             EndGameMenu = BaseMenu.AddSubMenu("EndGame Message", "endgamemessage");
@@ -136,6 +136,11 @@ namespace AutoChat
             {
                 "push towers", "towers" , "clear lanes", "push", "need objectives", "objectives" ,"lanes", "push", "drag?"
             };
+
+            Honor = new List<string>
+            {
+                "wp" ,"wp" , "wp sir", "damn wp", "wp mate", "wp dude", "wp man"
+            };
         }
 
         static string getRandomElement(List<string> collection, bool firstEmpty = true)
@@ -203,6 +208,14 @@ namespace AutoChat
             return motivate;
         }
 
+        static string generateHonor()
+        {
+            string honor = getRandomElement(Honor, false);
+            honor += " ";
+            honor += getRandomElement(Smileys);
+            return honor;
+        }
+
         static string generateEnding()
         {
             string ending = getRandomElement(SignOff, false);
@@ -225,9 +238,12 @@ namespace AutoChat
                 if (GreetingMenu["sayGreetingAllChat"].Cast<CheckBox>().CurrentValue)
                 {
                     Core.DelayAction(() => Chat.Say("/all " + generateGreeting()), (random.Next(minGreetingDelay, maxGreetingDelay)));
-                    return;
                 }
-                Core.DelayAction(() => Chat.Say(generateGreeting()), (random.Next(minGreetingDelay, maxGreetingDelay)));
+                else
+                {
+                    Core.DelayAction(() => Chat.Say(generateGreeting()), (random.Next(minGreetingDelay, maxGreetingDelay)));
+                }
+                
             }
         }
 
@@ -291,6 +307,17 @@ namespace AutoChat
             }
         }
 
+        static void sayHonor()
+        {
+            if (OptionsMenu["sayHonor"].Cast<CheckBox>().CurrentValue)
+            {
+                if (chance(10))
+                {
+                    Core.DelayAction(() => Chat.Say("/all " + generateHonor()), (random.Next(minDelay, maxDelay)));
+                }
+            }
+        }
+
         static void saySignOff()
         {
             if (EndGameMenu["sayEndGame"].Cast<CheckBox>().CurrentValue)
@@ -305,11 +332,18 @@ namespace AutoChat
         }
         #endregion
 
+        static public bool chance(int percentchance)
+        {
+            int p = (100 / percentchance);
+            int c = random.Next(0, p);
+            if (c == 1) return true;
+            return false;
+        }
+
         #region Slang Names
         static string slangName(string champName)
         {
-            int chance = random.Next(0, 5);
-            if (chance == 1)
+            if (chance(20))
             {
                 switch (champName)
                 {
@@ -318,7 +352,7 @@ namespace AutoChat
                     case "Caitlyn": return "cait";
                     case "Cassiopeia": return "cass";
                     case "Cho'Gath": return "cho";
-                    case "Dr. Mundo": return "mundo";
+                    case "Dr.Mundo": return "mundo";
                     case "Evelynn": return "eve";
                     case "Ezreal": return "ez";
                     case "Fiddlesticks": return "fiddles";
@@ -330,12 +364,13 @@ namespace AutoChat
                     case "Kha'Zix": return "khazix";
                     case "Kog'Maw": return "kog";
                     case "LeBlanc": return "lb";
-                    case "Lee Sin": return "lee";
+                    case "LeeSin": return "lee";
                     case "Lissandra": return "liss";
                     case "Malphite": return "malph";
                     case "Malzahar": return "malz";
-                    case "Master Yi": return "yi";
-                    case "Miss Fortune": return "mf";
+                    case "MasterYi": return "yi";
+                    case "MissFortune": return "mf";
+                    case "MonkeyKing": return "wk";
                     case "Mordekaiser": return "mord";
                     case "Morgana": return "morg";
                     case "Nautilus": return "naut";
@@ -344,10 +379,10 @@ namespace AutoChat
                     case "Orianna": return "ori";
                     case "Rek'Sai": return "reksai";
                     case "Sejuani": return "sej";
-                    case "Tahm Kench": return "tahm";
+                    case "TahmKench": return "tahm";
                     case "Tristana": return "trist";
                     case "Tryndamere": return "trynd";
-                    case "Twisted Fate": return "tf";
+                    case "TwistedFate": return "tf";
                     case "Vel'Koz": return "velkoz";
                     case "Vladimir": return "vlad";
                     case "Volibear": return "voli";
@@ -382,6 +417,19 @@ namespace AutoChat
                     }
                 }
 
+                //TURRET KILLS
+                if (args.EventId.ToString() == "OnTurretKill")
+                {
+                    AIHeroClient _killer = ObjectManager.GetUnitByNetworkId<AIHeroClient>(args.NetworkId);
+                    if (_killer.IsAlly)
+                    {
+                        if (!_killer.IsMe)
+                        {
+                            sayCongratulations();
+                        }
+                    }
+                }
+
                 // OBJECTIVES
                 if (args.EventId.ToString() == "OnKillDragon" || args.EventId.ToString() == "OnKillWorm")
                 {
@@ -404,6 +452,7 @@ namespace AutoChat
                         if (_dead.IsMe)
                         {
                             sayApology();
+                            sayHonor();
                         }
                         else
                         {
