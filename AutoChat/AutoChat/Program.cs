@@ -5,6 +5,7 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Events;
+using System.Linq;
 
 namespace AutoChat
 {
@@ -19,6 +20,7 @@ namespace AutoChat
         public static List<string> Clutch;
         public static List<string> Motivate;
         public static List<string> Honor;
+        public static AIHeroClient Player = EloBuddy.Player.Instance;
 
         public static Dictionary<GameEventId, int> Events;
         public static Random random = new Random();
@@ -47,6 +49,7 @@ namespace AutoChat
             Game.OnNotify += Game_OnGameNotifyEvent;
         }
 
+        #region Menu
         static void setupMenu()
         {
             BaseMenu = MainMenu.AddMenu(MenuName, MenuName.ToLower());
@@ -74,7 +77,9 @@ namespace AutoChat
             EndGameMenu.Add("sayEndGame", new CheckBox("Say EndGame Message"));
             EndGameMenu.Add("sayEndGameAllChat", new CheckBox("Say EndGame Message In All Chat"));
         }
+        #endregion
 
+        #region Setup Events
         static void setupEvents()
         {
             Events = new Dictionary<GameEventId, int>
@@ -94,7 +99,9 @@ namespace AutoChat
                 { GameEventId.OnHQKill, 1 },  // nexus kill
             };
         }
+        #endregion
 
+        #region Messages
         static void setupMessages()
         {
             Congrats = new List<string>
@@ -142,13 +149,14 @@ namespace AutoChat
                 "wp" ,"wp" , "wp sir", "damn wp", "wp mate", "wp dude", "wp man"
             };
         }
+        #endregion
 
+        #region Generate Functions
         static string getRandomElement(List<string> collection, bool firstEmpty = true)
         {
             return collection[random.Next(collection.Count)];
         }
 
-        #region Generate Functions
         static string generateGreeting()
         {
             string greeting = getRandomElement(Greetings, false);
@@ -332,14 +340,6 @@ namespace AutoChat
         }
         #endregion
 
-        static public bool chance(int percentchance)
-        {
-            int p = (100 / percentchance);
-            int c = random.Next(0, p);
-            if (c == 1) return true;
-            return false;
-        }
-
         #region Slang Names
         static string slangName(string champName)
         {
@@ -395,9 +395,11 @@ namespace AutoChat
         }
         #endregion
 
+        #region Game Events
         static void Game_OnGameNotifyEvent(GameNotifyEventArgs args)
         {
             if (!BaseMenu["enable"].Cast<CheckBox>().CurrentValue) return;
+            if (InTeamFight()) return;
 
             if (Events.ContainsKey(args.EventId))
             {
@@ -521,5 +523,22 @@ namespace AutoChat
                 }
             }
         }
+        #endregion
+
+        #region Other Functions
+        static public bool chance(int percentchance)
+        {
+            int c = random.Next(1, 100);
+            bool x = (c > 0 && c < percentchance) ? true : false;
+            return x;
+        }
+
+        static bool InTeamFight()
+        {
+            int enemies = EntityManager.Heroes.Enemies.Where(it => !it.IsMe && !it.IsDead && it.Distance(Player) <= 700).Count();
+            bool x = (enemies >= 2) ? true : false;
+            return x;
+        }
+        #endregion 
     }
 }
