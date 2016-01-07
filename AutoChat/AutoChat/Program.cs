@@ -118,7 +118,13 @@ namespace AutoChat
 
             Greetings = new List<string>
             {
-                "gl", "hf", "have fun guys", "gl hf", "glhf", "have fun all"
+                "lago ai lago aqui?",
+                "ÉÔQQQQQQQQQQQQ",
+                "vem pro duelo"
+                "circo de SOLÉÉÉÉD",
+                "garanta já seu ingresso para o circo de SOLÉÉÉÉD",
+		"trabson parsa",
+		"trabalho",
             };
 
             SignOff = new List<string>
