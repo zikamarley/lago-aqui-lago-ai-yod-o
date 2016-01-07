@@ -118,10 +118,9 @@ namespace AutoChat
 
             Greetings = new List<string>
             {
-                "lago ai lago aqui?",
+                "lago aqui lago ai?",
                 "EOQQQQQQQQQQQQ",
                 "vem pro duelo",
-                "circo de SOLEEEEED",
                 "garanta já seu ingresso para o circo de SOLEEED",
 		"trabson",
 		"trabalho parsa"
