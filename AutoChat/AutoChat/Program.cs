@@ -123,8 +123,8 @@ namespace AutoChat
                 "vem pro duelo",
                 "circo de SOLÉÉÉÉD",
                 "garanta já seu ingresso para o circo de SOLÉÉÉÉD",
-		"trabson parsa",
-		"trabalho"
+		"trabson ÉOQ",
+		"trabalho parsa"
             };
 
             SignOff = new List<string>
