@@ -119,11 +119,11 @@ namespace AutoChat
             Greetings = new List<string>
             {
                 "lago ai lago aqui?",
-                "ÉÔQQQQQQQQQQQQ",
+                "EOQQQQQQQQQQQQ",
                 "vem pro duelo",
-                "circo de SOLÉÉÉÉD",
-                "garanta já seu ingresso para o circo de SOLÉÉÉÉD",
-		"trabson ÉOQ",
+                "circo de SOLEEEEED",
+                "garanta já seu ingresso para o circo de SOLEEED",
+		"trabson",
 		"trabalho parsa"
             };
 
@@ -144,8 +144,8 @@ namespace AutoChat
 
             Clutch = new List<string>
             {
-				"circo de SOLÉÉÉÉD",
-				"garanta já seu ingresso para o circo de SOLÉD",
+				"circo de SOLEEED",
+				"garanta já seu ingresso para o circo de SOLED",
 				"circo de soled",
 				"trabson parsa",
 				"RX RX RX RX RX RX"
