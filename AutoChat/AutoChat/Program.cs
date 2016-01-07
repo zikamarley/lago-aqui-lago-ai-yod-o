@@ -120,11 +120,11 @@ namespace AutoChat
             {
                 "lago ai lago aqui?",
                 "ÉÔQQQQQQQQQQQQ",
-                "vem pro duelo"
+                "vem pro duelo",
                 "circo de SOLÉÉÉÉD",
                 "garanta já seu ingresso para o circo de SOLÉÉÉÉD",
 		"trabson parsa",
-		"trabalho",
+		"trabalho"
             };
 
             SignOff = new List<string>
@@ -148,7 +148,7 @@ namespace AutoChat
 				"garanta já seu ingresso para o circo de SOLÉD",
 				"circo de soled",
 				"trabson parsa",
-				"RX RX RX RX RX RX",
+				"RX RX RX RX RX RX"
             };
 
             Motivate = new List<string>
