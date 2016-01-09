@@ -121,9 +121,9 @@ namespace AutoChat
                 "lago aqui lago ai?",
                 "EOQQQQQQQQQQQQ",
                 "vem pro duelo",
-                "garanta já seu ingresso para o circo de SOLEEED",
-		"trabson",
-		"trabalho parsa"
+                "garanta ja seu ingresso para o circo de SOLEEED",
+		"trabson parsa",
+		"aqui e trabalho"
             };
 
             SignOff = new List<string>
